@@ -3,20 +3,16 @@ module github.com/cisco-open/nasp
 go 1.18
 
 replace (
-	github.com/banzaicloud/proxy-wasm-go-host => /Users/zsltvrg/projects/proxy-wasm-go-host
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer => /Users/zsltvrg/projects/proxy-wasm-go-host/runtime/wasmer
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime => /Users/zsltvrg/projects/proxy-wasm-go-host/runtime/wasmtime
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero => /Users/zsltvrg/projects/proxy-wasm-go-host/runtime/wazero
 	github.com/spf13/cobra => github.com/spf13/cobra v1.6.0
 	helm.sh/helm/v3 => helm.sh/helm/v3 v3.9.4
 )
 
 require (
 	emperror.dev/errors v0.8.1
-	github.com/banzaicloud/proxy-wasm-go-host v0.2.1-0.20221123073237-4f948bf02510
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer v0.0.0-00010101000000-000000000000
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime v0.0.0-00010101000000-000000000000
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v0.0.0-00010101000000-000000000000
+	github.com/banzaicloud/proxy-wasm-go-host v1.0.0
+	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer v1.0.0
+	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime v1.0.0
+	github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/cncf/xds/go v0.0.0-20220520190051-1e77728a1eaa
 	github.com/envoyproxy/go-control-plane v0.10.3-0.20220719090109-b024c36d9935
