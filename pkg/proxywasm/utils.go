@@ -20,19 +20,20 @@ import (
 
 	"emperror.dev/errors"
 	"github.com/go-logr/logr"
-	v1 "mosn.io/proxy-wasm-go-host/proxywasm/v1"
+
+	"github.com/banzaicloud/proxy-wasm-go-host/api"
 )
 
-func StopWasmContext(contextID int32, abiContext v1.ContextHandler, logger logr.Logger) error {
+func StopWasmContext(contextID int32, abiContext api.ContextHandler, logger logr.Logger) error {
 	if res, err := abiContext.GetExports().ProxyOnDone(contextID); err != nil {
 		return errors.WrapIfWithDetails(err, "error at ProxyOnDone", "contextID", contextID)
-	} else if res != 1 {
+	} else if !res {
 		return errors.NewWithDetails("unknown error at ProxyOnDone", "contextID", contextID)
 	} else {
 		logger.V(3).Info("ProxyOnDone has run successfully", "contextID", contextID)
 	}
 
-	if res := abiContext.GetImports().Done(); res != v1.WasmResultOk {
+	if res := abiContext.GetImports().Done(); res != api.WasmResultOk {
 		return errors.NewWithDetails("unknown error at Done", "contextID", contextID)
 	} else {
 		logger.V(3).Info("Done has run successfully", "contextID", contextID)

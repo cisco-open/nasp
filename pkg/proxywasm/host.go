@@ -23,14 +23,14 @@ import (
 
 	"github.com/go-logr/logr"
 	klog "k8s.io/klog/v2"
-	"mosn.io/proxy-wasm-go-host/proxywasm/common"
-	v1 "mosn.io/proxy-wasm-go-host/proxywasm/v1"
 
+	pwapi "github.com/banzaicloud/proxy-wasm-go-host/api"
+	"github.com/banzaicloud/proxy-wasm-go-host/pkg/utils"
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
 )
 
 type HostFunctions struct {
-	v1.ImportsHandler
+	pwapi.ImportsHandler
 
 	logger logr.Logger
 
@@ -76,17 +76,17 @@ func (f *HostFunctions) Logger() logr.Logger {
 
 // wasm host functions
 
-func (f *HostFunctions) GetPluginConfig() common.IoBuffer {
+func (f *HostFunctions) GetPluginConfig() pwapi.IoBuffer {
 	if val, found := f.properties.Get("plugin_config.bytes"); found {
 		if content, ok := val.([]byte); ok {
-			return common.NewIoBufferBytes(content)
+			return utils.NewIoBufferBytes(content)
 		}
 	}
 
 	return nil
 }
 
-func (f *HostFunctions) Log(level v1.LogLevel, msg string) v1.WasmResult {
+func (f *HostFunctions) Log(level pwapi.LogLevel, msg string) pwapi.WasmResult {
 	logLevel := 0
 	if level < 2 {
 		logLevel = 2 - int(level)
@@ -94,36 +94,36 @@ func (f *HostFunctions) Log(level v1.LogLevel, msg string) v1.WasmResult {
 
 	f.Logger().V(logLevel).WithName("wasm filter").Info(msg, "level", level)
 
-	return v1.WasmResultOk
+	return pwapi.WasmResultOk
 }
 
-func (f *HostFunctions) CallForeignFunction(funcName string, param []byte) ([]byte, v1.WasmResult) {
-	return nil, v1.WasmResultUnimplemented
+func (f *HostFunctions) CallForeignFunction(funcName string, param []byte) ([]byte, pwapi.WasmResult) {
+	return nil, pwapi.WasmResultUnimplemented
 }
 
-func (f *HostFunctions) GetProperty(key string) (string, v1.WasmResult) {
+func (f *HostFunctions) GetProperty(key string) (string, pwapi.WasmResult) {
 	key = strings.TrimRight(strings.ReplaceAll(key, "\x00", "."), ".")
 
 	if v, ok := f.properties.Get(key); ok {
 		f.Logger().V(2).Info("get property", "key", key, "value", v)
 
-		return Stringify(v), v1.WasmResultOk
+		return Stringify(v), pwapi.WasmResultOk
 	}
 
 	f.Logger().V(2).Info("get property", "key", key, "value", "(MISSING)")
 
-	return "", v1.WasmResultNotFound
+	return "", pwapi.WasmResultNotFound
 }
 
-func (f *HostFunctions) SetProperty(key, value string) v1.WasmResult {
+func (f *HostFunctions) SetProperty(key, value string) pwapi.WasmResult {
 	f.Logger().V(2).Info("set property", "key", key, "value", value)
 
 	f.properties.Set(key, value)
 
-	return v1.WasmResultOk
+	return pwapi.WasmResultOk
 }
 
-func (f *HostFunctions) GetHttpRequestHeader() common.HeaderMap {
+func (f *HostFunctions) GetHttpRequestHeader() pwapi.HeaderMap {
 	var value interface{}
 	var ok bool
 
@@ -139,9 +139,9 @@ func (f *HostFunctions) GetHttpRequestHeader() common.HeaderMap {
 	return nil
 }
 
-func (f *HostFunctions) GetHttpRequestBody() common.IoBuffer {
+func (f *HostFunctions) GetHttpRequestBody() pwapi.IoBuffer {
 	if val, ok := f.properties.Get("request.body"); ok {
-		if content, ok := val.(common.IoBuffer); ok {
+		if content, ok := val.(pwapi.IoBuffer); ok {
 			return content
 		}
 	}
@@ -149,9 +149,9 @@ func (f *HostFunctions) GetHttpRequestBody() common.IoBuffer {
 	return nil
 }
 
-func (f *HostFunctions) GetHttpResponseBody() common.IoBuffer {
+func (f *HostFunctions) GetHttpResponseBody() pwapi.IoBuffer {
 	if val, ok := f.properties.Get("response.body"); ok {
-		if content, ok := val.(common.IoBuffer); ok {
+		if content, ok := val.(pwapi.IoBuffer); ok {
 			return content
 		}
 	}
@@ -159,7 +159,7 @@ func (f *HostFunctions) GetHttpResponseBody() common.IoBuffer {
 	return nil
 }
 
-func (f *HostFunctions) GetHttpResponseHeader() common.HeaderMap {
+func (f *HostFunctions) GetHttpResponseHeader() pwapi.HeaderMap {
 	var value interface{}
 	var ok bool
 
@@ -175,9 +175,9 @@ func (f *HostFunctions) GetHttpResponseHeader() common.HeaderMap {
 	return nil
 }
 
-func (f *HostFunctions) GetDownStreamData() common.IoBuffer {
+func (f *HostFunctions) GetDownStreamData() pwapi.IoBuffer {
 	if val, found := f.properties.Get("downstream.data"); found {
-		if content, ok := val.(common.IoBuffer); ok {
+		if content, ok := val.(pwapi.IoBuffer); ok {
 			return content
 		}
 	}
@@ -185,9 +185,9 @@ func (f *HostFunctions) GetDownStreamData() common.IoBuffer {
 	return nil
 }
 
-func (f *HostFunctions) GetUpstreamData() common.IoBuffer {
+func (f *HostFunctions) GetUpstreamData() pwapi.IoBuffer {
 	if val, found := f.properties.Get("upstream.data"); found {
-		if content, ok := val.(common.IoBuffer); ok {
+		if content, ok := val.(pwapi.IoBuffer); ok {
 			return content
 		}
 	}
@@ -195,7 +195,7 @@ func (f *HostFunctions) GetUpstreamData() common.IoBuffer {
 	return nil
 }
 
-func (f *HostFunctions) SendHttpResp(respCode int32, respCodeDetail common.IoBuffer, respBody common.IoBuffer, additionalHeaderMap common.HeaderMap, grpcCode int32) v1.WasmResult {
+func (f *HostFunctions) SendHttpResp(respCode int32, respCodeDetail pwapi.IoBuffer, respBody pwapi.IoBuffer, additionalHeaderMap pwapi.HeaderMap, grpcCode int32) pwapi.WasmResult {
 	if value, ok := f.properties.Get("http.response"); ok {
 		if resp, ok := value.(interface {
 			GetHTTPResponse() *http.Response
@@ -210,19 +210,19 @@ func (f *HostFunctions) SendHttpResp(respCode int32, respCodeDetail common.IoBuf
 			})
 		}
 
-		return v1.WasmResultOk
+		return pwapi.WasmResultOk
 	}
 
-	return v1.WasmResultNotFound
+	return pwapi.WasmResultNotFound
 }
 
-func (f *HostFunctions) SetEffectiveContextID(contextID int32) v1.WasmResult {
-	var rootContext v1.ContextHandler
+func (f *HostFunctions) SetEffectiveContextID(contextID int32) pwapi.WasmResult {
+	var rootContext api.ContextHandler
 	if ctx, ok := RootABIContextProperty(f.properties).Get(); ok {
 		rootContext = ctx
 	}
 	if rootContext == nil {
-		return v1.WasmResultInternalFailure
+		return pwapi.WasmResultInternalFailure
 	}
 
 	var plugin api.WasmPlugin
@@ -230,14 +230,14 @@ func (f *HostFunctions) SetEffectiveContextID(contextID int32) v1.WasmResult {
 		plugin = plug
 	}
 	if plugin == nil {
-		return v1.WasmResultInternalFailure
+		return pwapi.WasmResultInternalFailure
 	}
 
 	// root context
 	if contextID == plugin.Context().ID() {
 		rootContext.GetInstance().SetData(rootContext)
 
-		return v1.WasmResultOk
+		return pwapi.WasmResultOk
 	}
 
 	// filter context
@@ -245,19 +245,19 @@ func (f *HostFunctions) SetEffectiveContextID(contextID int32) v1.WasmResult {
 	if found {
 		rootContext.GetInstance().SetData(fc.GetABIContext())
 
-		return v1.WasmResultOk
+		return pwapi.WasmResultOk
 	}
 
-	return v1.WasmResultNotFound
+	return pwapi.WasmResultNotFound
 }
 
-func (f *HostFunctions) SetTickPeriodMilliseconds(tickPeriodMilliseconds int32) v1.WasmResult {
-	var rootContext v1.ContextHandler
+func (f *HostFunctions) SetTickPeriodMilliseconds(tickPeriodMilliseconds int32) pwapi.WasmResult {
+	var rootContext api.ContextHandler
 	if ctx, ok := RootABIContextProperty(f.properties).Get(); ok {
 		rootContext = ctx
 	}
 	if rootContext == nil {
-		return v1.WasmResultInternalFailure
+		return pwapi.WasmResultInternalFailure
 	}
 
 	var plugin api.WasmPlugin
@@ -265,7 +265,7 @@ func (f *HostFunctions) SetTickPeriodMilliseconds(tickPeriodMilliseconds int32) 
 		plugin = plug
 	}
 	if plugin == nil {
-		return v1.WasmResultInternalFailure
+		return pwapi.WasmResultInternalFailure
 	}
 
 	logger := f.logger.WithValues("contextID", plugin.Context().ID())
@@ -299,54 +299,54 @@ func (f *HostFunctions) SetTickPeriodMilliseconds(tickPeriodMilliseconds int32) 
 		}
 	}()
 
-	return v1.WasmResultOk
+	return pwapi.WasmResultOk
 }
 
-func (f *HostFunctions) Done() v1.WasmResult {
+func (f *HostFunctions) Done() pwapi.WasmResult {
 	if wph, ok := f.properties.(api.WrappedPropertyHolder); ok {
 		if done, ok := TickerDoneChannelProperty(wph.Properties()).Get(); ok {
 			done <- true
 		}
 	}
 
-	return v1.WasmResultOk
+	return pwapi.WasmResultOk
 }
 
-func (f *HostFunctions) DefineMetric(metricType v1.MetricType, name string) (int32, v1.WasmResult) {
+func (f *HostFunctions) DefineMetric(metricType pwapi.MetricType, name string) (int32, pwapi.WasmResult) {
 	if f.metrics == nil {
-		return 0, v1.WasmResultUnimplemented
+		return 0, pwapi.WasmResultUnimplemented
 	}
 
 	retval := f.metrics.DefineMetric(int32(metricType), name)
 	if retval < 0 {
-		return retval, v1.WasmResultInternalFailure
+		return retval, pwapi.WasmResultInternalFailure
 	}
 
-	return retval, v1.WasmResultOk
+	return retval, pwapi.WasmResultOk
 }
 
-func (f *HostFunctions) RecordMetric(metricID int32, value int64) v1.WasmResult {
+func (f *HostFunctions) RecordMetric(metricID int32, value int64) pwapi.WasmResult {
 	if f.metrics == nil {
-		return v1.WasmResultNotFound
+		return pwapi.WasmResultNotFound
 	}
 
 	err := f.metrics.RecordMetric(metricID, value)
 	if err != nil {
-		return v1.WasmResultNotFound
+		return pwapi.WasmResultNotFound
 	}
 
-	return v1.WasmResultOk
+	return pwapi.WasmResultOk
 }
 
-func (f *HostFunctions) IncrementMetric(metricID int32, offset int64) v1.WasmResult {
+func (f *HostFunctions) IncrementMetric(metricID int32, offset int64) pwapi.WasmResult {
 	if f.metrics == nil {
-		return v1.WasmResultNotFound
+		return pwapi.WasmResultNotFound
 	}
 
 	err := f.metrics.IncrementMetric(metricID, offset)
 	if err != nil {
-		return v1.WasmResultNotFound
+		return pwapi.WasmResultNotFound
 	}
 
-	return v1.WasmResultOk
+	return pwapi.WasmResultOk
 }

@@ -17,13 +17,13 @@ package proxywasm
 import (
 	"emperror.dev/errors"
 	"github.com/go-logr/logr"
-	proxywasm "mosn.io/proxy-wasm-go-host/proxywasm/v1"
 
+	"github.com/banzaicloud/proxy-wasm-go-host/abi"
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
 )
 
 type filterContext struct {
-	*proxywasm.ABIContext
+	api.ABIContext
 
 	id          int32
 	plugin      api.WasmPlugin
@@ -48,13 +48,10 @@ func NewFilterContext(plugin api.WasmPlugin, properties api.PropertyHolder) (api
 	}
 
 	context := &filterContext{
-		ABIContext: &proxywasm.ABIContext{
-			Imports: NewHostFunctions(
-				NewPropertyHolderWrapper(properties, plugin.GetWasmInstanceContext(instance).GetProperties()),
-				hostOptions...,
-			),
-			Instance: instance,
-		},
+		ABIContext: abi.NewContext(NewHostFunctions(
+			NewPropertyHolderWrapper(properties, plugin.GetWasmInstanceContext(instance).GetProperties()),
+			hostOptions...,
+		), instance),
 		logger:      plugin.Logger(),
 		id:          plugin.Context().NewContextID(),
 		rootContext: plugin.Context(),
@@ -73,7 +70,7 @@ func NewFilterContext(plugin api.WasmPlugin, properties api.PropertyHolder) (api
 	return context, nil
 }
 
-func (c *filterContext) GetABIContext() proxywasm.ContextHandler {
+func (c *filterContext) GetABIContext() api.ContextHandler {
 	return c.ABIContext
 }
 
@@ -82,17 +79,17 @@ func (c *filterContext) Logger() logr.Logger {
 }
 
 func (c *filterContext) Lock() {
-	c.ABIContext.Instance.Lock(c.ABIContext)
+	c.ABIContext.GetInstance().Lock(c.ABIContext)
 }
 
 func (c *filterContext) Unlock() {
-	c.ABIContext.Instance.Unlock()
+	c.ABIContext.GetInstance().Unlock()
 }
 
 func (c *filterContext) Close() {
 	c.Unlock()
-	c.plugin.ReleaseInstance(c.ABIContext.Instance)
-	c.plugin.UnregisterFilterContext(c.ABIContext.Instance, c)
+	c.plugin.ReleaseInstance(c.ABIContext.GetInstance())
+	c.plugin.UnregisterFilterContext(c.ABIContext.GetInstance(), c)
 }
 
 func (c *filterContext) ID() int32 {

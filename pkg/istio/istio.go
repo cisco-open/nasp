@@ -31,6 +31,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime"
+	"github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero"
 	"github.com/cisco-open/nasp/pkg/ca"
 	istio_ca "github.com/cisco-open/nasp/pkg/ca/istio"
 	"github.com/cisco-open/nasp/pkg/environment"
@@ -44,8 +46,6 @@ import (
 	pwhttp "github.com/cisco-open/nasp/pkg/proxywasm/http"
 	"github.com/cisco-open/nasp/pkg/proxywasm/middleware"
 	"github.com/cisco-open/nasp/pkg/proxywasm/tcp"
-	"github.com/cisco-open/nasp/pkg/proxywasm/wasmtime"
-	"github.com/cisco-open/nasp/pkg/proxywasm/wazero"
 	unifiedtls "github.com/cisco-open/nasp/pkg/tls"
 )
 
@@ -173,10 +173,10 @@ func NewIstioIntegrationHandler(config *IstioIntegrationHandlerConfig, logger lo
 
 	runtimeCreators := proxywasm.NewRuntimeCreatorStore()
 	runtimeCreators.Set("wazero", func() api.WasmRuntime {
-		return wazero.NewVM(context.Background(), logger)
+		return wazero.NewVM(context.Background(), wazero.VMWithLogger(logger))
 	})
 	runtimeCreators.Set("wasmtime", func() api.WasmRuntime {
-		return wasmtime.NewVM(context.Background(), logger)
+		return wasmtime.NewVM(context.Background(), wasmtime.VMWithLogger(logger))
 	})
 	if getWasmerRuntime != nil {
 		runtimeCreators.Set("wasmer", func() api.WasmRuntime {

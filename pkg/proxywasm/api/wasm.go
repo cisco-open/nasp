@@ -15,24 +15,17 @@
 package api
 
 import (
-	"github.com/go-logr/logr"
-	"mosn.io/proxy-wasm-go-host/proxywasm/common"
-	v1 "mosn.io/proxy-wasm-go-host/proxywasm/v1"
+	"github.com/banzaicloud/proxy-wasm-go-host/api"
 )
 
-type WasmResult = v1.WasmResult
-
-type WasmInstance = common.WasmInstance
+type WasmResult = api.WasmResult
+type WasmInstance = api.WasmInstance
+type WasmModule = api.WasmModule
+type ContextHandler = api.ContextHandler
+type ABIContext = api.ABIContext
 
 type WasmInstanceContext interface {
-	GetInstance() common.WasmInstance
+	GetInstance() WasmInstance
 	GetProperties() PropertyHolder
-	GetABIContext() v1.ContextHandler
-}
-
-type WasmModule interface {
-	Init()
-	NewInstance() (WasmInstance, error)
-	GetABINameList() []string
-	SetLogger(logger logr.Logger)
+	GetABIContext() ContextHandler
 }

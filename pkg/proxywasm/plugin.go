@@ -20,7 +20,8 @@ import (
 
 	"emperror.dev/errors"
 	"github.com/go-logr/logr"
-	proxywasm "mosn.io/proxy-wasm-go-host/proxywasm/v1"
+
+	"github.com/banzaicloud/proxy-wasm-go-host/abi"
 
 	"github.com/cisco-open/nasp/pkg/dotn"
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
@@ -262,10 +263,7 @@ func (p *wasmPlugin) GetWasmInstanceContext(instance api.WasmInstance) api.WasmI
 
 	instanceProperties := NewPropertyHolderWrapper(dotn.New(), p.ctx)
 
-	ctx := &proxywasm.ABIContext{
-		Imports:  NewHostFunctions(instanceProperties, hostOptions...),
-		Instance: instance,
-	}
+	ctx := abi.NewContext(NewHostFunctions(instanceProperties, hostOptions...), instance)
 
 	RootABIContextProperty(instanceProperties).Set(ctx)
 
@@ -310,7 +308,7 @@ func (p *wasmPlugin) startInstance(instance api.WasmInstance) error {
 
 	if res, err := ctx.GetExports().ProxyOnVmStart(p.ctx.ID(), 0); err != nil {
 		return errors.WrapIfWithDetails(err, "error at ProxyOnVmStart", "contextID", p.ctx.ID())
-	} else if res != 1 {
+	} else if !res {
 		return errors.NewWithDetails("unknown error at ProxyOnVmStart", "contextID", p.ctx.ID())
 	} else {
 		p.logger.V(3).Info("ProxyOnVmStart has run successfully", "contextID", p.ctx.ID())
@@ -319,7 +317,7 @@ func (p *wasmPlugin) startInstance(instance api.WasmInstance) error {
 	_, size := p.getPluginConfig()
 	if res, err := ctx.GetExports().ProxyOnConfigure(p.ctx.ID(), int32(size)); err != nil {
 		return errors.WrapIfWithDetails(err, "error at ProxyOnConfigure", "contextID", p.ctx.ID())
-	} else if res != 1 {
+	} else if !res {
 		return errors.NewWithDetails("unknown error at ProxyOnConfigure", "contextID", p.ctx.ID())
 	} else {
 		p.logger.V(3).Info("ProxyOnConfigure has run successfully")
@@ -381,7 +379,7 @@ func (p *wasmPlugin) removeInstanceFromfilterContexts(instance api.WasmInstance)
 type instanceContext struct {
 	instance       api.WasmInstance
 	properties     api.PropertyHolder
-	contextHandler proxywasm.ContextHandler
+	contextHandler api.ContextHandler
 }
 
 func (iwc *instanceContext) GetInstance() api.WasmInstance {
@@ -392,6 +390,6 @@ func (iwc *instanceContext) GetProperties() api.PropertyHolder {
 	return iwc.properties
 }
 
-func (iwc *instanceContext) GetABIContext() proxywasm.ContextHandler {
+func (iwc *instanceContext) GetABIContext() api.ContextHandler {
 	return iwc.contextHandler
 }

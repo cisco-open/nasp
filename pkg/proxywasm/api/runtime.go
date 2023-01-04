@@ -24,5 +24,5 @@ type WasmRuntimeCreator func() WasmRuntime
 type WasmRuntime interface {
 	Name() string
 	Init()
-	NewModule(wasmBytes []byte) WasmModule
+	NewModule(wasmBytes []byte) (WasmModule, error)
 }

@@ -15,8 +15,6 @@
 package proxywasm
 
 import (
-	v1 "mosn.io/proxy-wasm-go-host/proxywasm/v1"
-
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
 )
 
@@ -75,9 +73,9 @@ func RootABIContextProperty(p api.PropertyHolder) rootABIContextProperty {
 	return rootABIContextProperty{p, "root_abi_context"}
 }
 
-func (p rootABIContextProperty) Get() (v1.ContextHandler, bool) {
+func (p rootABIContextProperty) Get() (api.ContextHandler, bool) {
 	if v, ok := p.PropertyHolder.Get(p.key); ok {
-		if ctx, ok := v.(v1.ContextHandler); ok {
+		if ctx, ok := v.(api.ContextHandler); ok {
 			return ctx, true
 		}
 	}
@@ -85,6 +83,6 @@ func (p rootABIContextProperty) Get() (v1.ContextHandler, bool) {
 	return nil, false
 }
 
-func (p rootABIContextProperty) Set(ctx v1.ContextHandler) {
+func (p rootABIContextProperty) Set(ctx api.ContextHandler) {
 	p.PropertyHolder.Set(p.key, ctx)
 }

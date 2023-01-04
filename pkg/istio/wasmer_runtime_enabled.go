@@ -18,9 +18,7 @@
 package istio
 
 import (
-	"mosn.io/proxy-wasm-go-host/wasmer"
-
-	"github.com/cisco-open/nasp/pkg/proxywasm"
+	"github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer"
 )
 
-var getWasmerRuntime = proxywasm.NewWasmerAdapter(wasmer.NewWasmerVM())
+var getWasmerRuntime = wasmer.NewWasmerVM()

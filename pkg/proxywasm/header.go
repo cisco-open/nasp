@@ -18,7 +18,8 @@ import (
 	"strings"
 
 	"github.com/go-logr/logr"
-	"mosn.io/proxy-wasm-go-host/proxywasm/common"
+
+	pwapi "github.com/banzaicloud/proxy-wasm-go-host/api"
 
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
 )
@@ -30,7 +31,7 @@ type Headers struct {
 }
 
 type HeaderMap interface {
-	common.HeaderMap
+	pwapi.HeaderMap
 
 	Flatten() map[string]string
 }
@@ -79,7 +80,7 @@ func (h *Headers) Range(f func(key string, value string) bool) {
 	}
 }
 
-func (h *Headers) Clone() common.HeaderMap {
+func (h *Headers) Clone() pwapi.HeaderMap {
 	return &Headers{
 		headers: h.headers.Clone(),
 	}

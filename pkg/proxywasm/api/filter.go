@@ -16,11 +16,12 @@ package api
 
 import (
 	"github.com/go-logr/logr"
-	v1 "mosn.io/proxy-wasm-go-host/proxywasm/v1"
+
+	"github.com/banzaicloud/proxy-wasm-go-host/api"
 )
 
 type FilterContext interface {
-	v1.ContextHandler
+	api.ContextHandler
 
 	Logger() logr.Logger
 	Lock()
@@ -28,5 +29,5 @@ type FilterContext interface {
 	Close()
 	ID() int32
 	RootContext() Context
-	GetABIContext() v1.ContextHandler
+	GetABIContext() api.ContextHandler
 }

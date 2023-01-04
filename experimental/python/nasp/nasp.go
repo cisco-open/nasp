@@ -15,7 +15,6 @@
 
 package main
 
-import "C"
 import (
 	"fmt"
 	"hash/fnv"

@@ -21,7 +21,8 @@ import (
 
 	"emperror.dev/errors"
 	"github.com/go-logr/logr"
-	v1 "mosn.io/proxy-wasm-go-host/proxywasm/v1"
+
+	pwapi "github.com/banzaicloud/proxy-wasm-go-host/api"
 
 	"github.com/cisco-open/nasp/pkg/dotn"
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
@@ -127,7 +128,7 @@ func (s *stream) HandleHTTPRequest(req api.HTTPRequest) error {
 	s.Set("http.request", req)
 
 	for _, filterContext := range s.filterContexts {
-		action, err := func() (v1.Action, error) {
+		action, err := func() (pwapi.Action, error) {
 			filterContext.Lock()
 			defer func() {
 				filterContext.Unlock()
@@ -138,7 +139,7 @@ func (s *stream) HandleHTTPRequest(req api.HTTPRequest) error {
 		if err != nil {
 			return err
 		}
-		if action == v1.ActionPause {
+		if action == pwapi.ActionPause {
 			return nil
 		}
 	}
@@ -165,7 +166,7 @@ func (s *stream) HandleHTTPRequest(req api.HTTPRequest) error {
 		if nr > 0 || endOfStream == 1 {
 			body.Write(buf[:nr])
 			for _, filterContext := range s.filterContexts {
-				_, err := func() (v1.Action, error) {
+				_, err := func() (pwapi.Action, error) {
 					filterContext.Lock()
 					defer func() {
 						filterContext.Unlock()
@@ -191,7 +192,7 @@ func (s *stream) HandleHTTPResponse(resp api.HTTPResponse) error {
 	s.Set("http.response", resp)
 
 	for _, filterContext := range s.filterContexts {
-		_, err := func() (v1.Action, error) {
+		_, err := func() (pwapi.Action, error) {
 			filterContext.Lock()
 			defer func() {
 				filterContext.Unlock()
@@ -226,7 +227,7 @@ func (s *stream) HandleHTTPResponse(resp api.HTTPResponse) error {
 		if nr > 0 || endOfStream == 1 {
 			body.Write(buf[:nr])
 			for _, filterContext := range s.filterContexts {
-				_, err := func() (v1.Action, error) {
+				_, err := func() (pwapi.Action, error) {
 					filterContext.Lock()
 					defer func() {
 						filterContext.Unlock()
@@ -250,7 +251,7 @@ func (s *stream) HandleHTTPResponse(resp api.HTTPResponse) error {
 
 func (s *stream) HandleDownstreamData(conn net.Conn, n int, buf []byte) error {
 	for _, filterContext := range s.filterContexts {
-		_, err := func() (v1.Action, error) {
+		_, err := func() (pwapi.Action, error) {
 			filterContext.Lock()
 			defer filterContext.Close()
 
@@ -266,7 +267,7 @@ func (s *stream) HandleDownstreamData(conn net.Conn, n int, buf []byte) error {
 
 func (s *stream) HandleUpstreamData(conn net.Conn, n int, buf []byte) error {
 	for _, filterContext := range s.filterContexts {
-		_, err := func() (v1.Action, error) {
+		_, err := func() (pwapi.Action, error) {
 			filterContext.Lock()
 			defer filterContext.Close()
 
@@ -282,7 +283,7 @@ func (s *stream) HandleUpstreamData(conn net.Conn, n int, buf []byte) error {
 
 func (s *stream) HandleTCPNewConnection(conn net.Conn) error {
 	for _, filterContext := range s.filterContexts {
-		_, err := func() (v1.Action, error) {
+		_, err := func() (pwapi.Action, error) {
 			filterContext.Lock()
 			defer filterContext.Close()
 
@@ -302,11 +303,11 @@ func (s *stream) HandleTCPCloseConnection(conn net.Conn) error {
 			filterContext.Lock()
 			defer filterContext.Close()
 
-			if err := filterContext.GetExports().ProxyOnUpstreamConnectionClose(filterContext.ID(), int32(v1.PeerTypeRemote)); err != nil {
+			if err := filterContext.GetExports().ProxyOnUpstreamConnectionClose(filterContext.ID(), int32(pwapi.PeerTypeRemote)); err != nil {
 				return err
 			}
 
-			if err := filterContext.GetExports().ProxyOnDownstreamConnectionClose(filterContext.ID(), int32(v1.PeerTypeLocal)); err != nil {
+			if err := filterContext.GetExports().ProxyOnDownstreamConnectionClose(filterContext.ID(), int32(pwapi.PeerTypeLocal)); err != nil {
 				return err
 			}
 

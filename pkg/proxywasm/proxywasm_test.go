@@ -23,11 +23,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"k8s.io/klog/v2/klogr"
 
+	"github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero"
 	"github.com/cisco-open/nasp/pkg/dotn"
 	"github.com/cisco-open/nasp/pkg/proxywasm"
 	"github.com/cisco-open/nasp/pkg/proxywasm/api"
 	"github.com/cisco-open/nasp/pkg/proxywasm/testdata"
-	"github.com/cisco-open/nasp/pkg/proxywasm/wazero"
 )
 
 func TestProxyOnTickAndSetEffectiveContext(t *testing.T) {
@@ -38,7 +38,7 @@ func TestProxyOnTickAndSetEffectiveContext(t *testing.T) {
 
 	runtimeCreators := proxywasm.NewRuntimeCreatorStore()
 	runtimeCreators.Set("wazero", func() api.WasmRuntime {
-		return wazero.NewVM(context.Background(), logger)
+		return wazero.NewVM(context.Background(), wazero.VMWithLogger(logger))
 	})
 
 	vms := proxywasm.NewVMStore(runtimeCreators, logger)
