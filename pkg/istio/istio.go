@@ -288,8 +288,7 @@ func (h *IstioIntegrationHandler) ListenAndServe(ctx context.Context, listenAddr
 		NextProtos: []string{
 			"h2",
 			"http/1.1",
-			"istio",
-			"istio-peer-exchange",
+			"http/1.0",
 		},
 	}
 

@@ -65,11 +65,9 @@ func (t *istioHTTPRequestTransport) RoundTrip(req *http.Request) (*http.Response
 				req.URL.Host += ":80"
 			}
 			tlsConfig.NextProtos = []string{
-				"istio",
-				"istio-peer-exchange",
-				"istio-http/1.0",
 				"istio-http/1.1",
-				"istio-h2",
+				"istio",
+				"http/1.1",
 			}
 		}
 	}

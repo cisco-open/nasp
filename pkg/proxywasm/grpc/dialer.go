@@ -158,8 +158,6 @@ func (g *GRPCDialer) GetTLSConfig() *tls.Config {
 		InsecureSkipVerify: true,
 		NextProtos: []string{
 			"istio-h2",
-			"istio",
-			"istio-peer-exchange",
 			"h2",
 		},
 	}
