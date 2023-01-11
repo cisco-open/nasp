@@ -12,7 +12,7 @@ require (
 	github.com/banzaicloud/proxy-wasm-go-host v1.0.0
 	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer v1.0.0
 	github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime v1.0.0
-	github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0
+	github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0-pre.6
 	github.com/cenkalti/backoff/v4 v4.1.3
 	github.com/cncf/xds/go v0.0.0-20220520190051-1e77728a1eaa
 	github.com/envoyproxy/go-control-plane v0.10.3-0.20220719090109-b024c36d9935
@@ -116,7 +116,7 @@ require (
 	github.com/spf13/cobra v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stoewer/go-strcase v1.2.0 // indirect
-	github.com/tetratelabs/wazero v1.0.0-pre.4 // indirect
+	github.com/tetratelabs/wazero v1.0.0-pre.6 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/wasmerio/wasmer-go v1.0.4 // indirect
 	go.opencensus.io v0.23.0 // indirect

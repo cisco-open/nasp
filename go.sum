@@ -129,8 +129,8 @@ github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer v1.0.0 h1:iYbU68Kzvtxle
 github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmer v1.0.0/go.mod h1:aYOL14WKUT/iF+mwLNhfb/x3VGUKX07S99aBRgGP9UI=
 github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime v1.0.0 h1:Il4ynAOEkLCJ8PItn/Ik0ZAGfiSGFRQ9QtXLyjNyg9Y=
 github.com/banzaicloud/proxy-wasm-go-host/runtime/wasmtime v1.0.0/go.mod h1:ywvA9UKtKJ0A385tGaA4t6uONK7Y+7DOUyc4Q+Qqi7A=
-github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0 h1:8KyQyXb+A7wIr7J1W3xqZrlEsx/hEdbmPJHZPEJ4cd0=
-github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0/go.mod h1:ygh5RBL05Db9JNSEuuVkVkSHgAy58w//Gnx6cY+OAoA=
+github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0-pre.6 h1:X+XStrljEd1zB9tJDJfMMALHKz41jKF4ZFMsK4Jr7Uw=
+github.com/banzaicloud/proxy-wasm-go-host/runtime/wazero v1.0.0-pre.6/go.mod h1:845zHmV6oq/07lBWrjEt9rI/w5/w2Ap+3TWYZuZc7Sg=
 github.com/benbjohnson/clock v1.0.3/go.mod h1:bGMdMPoPVvcYyt1gHDf4J2KE153Yf9BuiUKYMaxlTDM=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/benbjohnson/clock v1.1.0/go.mod h1:J11/hYXuz8f4ySSvYwY0FKfm+ezbsZBKZxNJlLklBHA=
@@ -723,8 +723,8 @@ github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKs
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/subosito/gotenv v1.3.0 h1:mjC+YW8QpAdXibNi+vNWgzmgBH4+5l5dCXv8cNysBLI=
 github.com/tetratelabs/wabin v0.0.0-20220927005300-3b0fbf39a46a h1:P0R3+CTAT7daT8ig5gh9GEd/eDQ5md1xl4pkYMcwOqg=
-github.com/tetratelabs/wazero v1.0.0-pre.4 h1:RBJQT5OzmORkSp6MmZDWoFEr0zXjk4pmvMKAdeUnsaI=
-github.com/tetratelabs/wazero v1.0.0-pre.4/go.mod h1:u8wrFmpdrykiFK0DFPiFm5a4+0RzsdmXYVtijBKqUVo=
+github.com/tetratelabs/wazero v1.0.0-pre.6 h1:3DRqjuHazHyZmgWCgqu7nKgYIYNEi2+2RQpCwTqbVHs=
+github.com/tetratelabs/wazero v1.0.0-pre.6/go.mod h1:u8wrFmpdrykiFK0DFPiFm5a4+0RzsdmXYVtijBKqUVo=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20201229170055-e5319fda7802 h1:uruHq4dN7GR16kFc5fp3d1RIYzJW5onx8Ybykw2YQFA=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20201229170055-e5319fda7802/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=
 github.com/ugorji/go v1.2.7 h1:qYhyWUUd6WbiM+C6JZAUkIJt/1WrjzNHY9+KCIjVqTo=
