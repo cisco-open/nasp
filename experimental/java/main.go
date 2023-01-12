@@ -36,6 +36,7 @@ var logger = klog.NewKlogr()
 type TCPListener struct {
 	iih      *istio.IstioIntegrationHandler
 	listener net.Listener
+	fd       int64
 	ctx      context.Context
 	cancel   context.CancelFunc
 }
@@ -61,6 +62,11 @@ func NewTCPListener(heimdallURL, clientID, clientSecret string) (*TCPListener, e
 	if err != nil {
 		return nil, err
 	}
+	fileListener, err := listener.(*net.TCPListener).File()
+	if err != nil {
+		return nil, err
+	}
+	fd := fileListener.Fd()
 
 	listener, err = iih.GetTCPListener(listener)
 	if err != nil {
@@ -73,9 +79,14 @@ func NewTCPListener(heimdallURL, clientID, clientSecret string) (*TCPListener, e
 	return &TCPListener{
 		iih:      iih,
 		listener: listener,
+		fd:       int64(fd),
 		ctx:      ctx,
 		cancel:   cancel,
 	}, nil
+}
+
+func (l *TCPListener) GetFD() int64 {
+	return l.fd
 }
 
 func (l *TCPListener) Accept() (*Connection, error) {

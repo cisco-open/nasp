@@ -16,19 +16,29 @@
 
     <repositories>
         <repository>
-            <id>github-nasp</id>
-            <url>https://maven.pkg.github.com/cisco-open/nasp</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>repo</id>
+            <url>file://${project.basedir}/../../repo/</url>
         </repository>
+<!--        <repository>-->
+<!--            <id>github-nasp</id>-->
+<!--            <url>https://maven.pkg.github.com/cisco-open/nasp</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>com.cisco.nasp</groupId>
+            <groupId>nasp</groupId>
             <artifactId>nasp</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.0.0</version>
+            <scope>compile</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.cisco.nasp</groupId>-->
+<!--            <artifactId>nasp</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>
